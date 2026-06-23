@@ -43,7 +43,7 @@ export default function LoginScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.title}>HaberSosyal'e Giriş Yap</ThemedText>
+      <ThemedText style={styles.title}>Haberly'e Giriş Yap</ThemedText>
 
       <TextInput
         value={email}

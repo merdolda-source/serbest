@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "HaberSosyal",
-    "slug": "habersosyal",
-    "scheme": "habersosyal",
+    "name": "Haberly",
+    "slug": "haberly",
+    "scheme": "haberly",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,7 +15,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.habersosyal.app",
+      "bundleIdentifier": "com.haberly.app",
       "usesAppleSignIn": true,
       "googleServicesFile": "./GoogleService-Info.plist",
       "config": {
@@ -28,7 +28,7 @@
       }
     },
     "android": {
-      "package": "com.habersosyal.app",
+      "package": "com.haberly.app",
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",

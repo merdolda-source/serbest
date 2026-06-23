@@ -1,4 +1,4 @@
-# HaberSosyal
+# Haberly
 
 Haber, Spor, Ekonomi ve Magazin içerikleri sunan; kullanıcıların yorum
 yapıp birbirine cevap verebildiği React Native (Expo) mobil uygulaması.
@@ -36,9 +36,9 @@ cd functions && npm install && cd ..
 2. **Authentication** > Sign-in method: Email/Password, Google, Apple'ı açın.
    - Authentication > Settings > **"One account per email address"** seçeneğini
      açın (tek hesap/e-posta kuralı için).
-3. Android app ekleyin (`com.habersosyal.app`) → `google-services.json`'ı
+3. Android app ekleyin (`com.haberly.app`) → `google-services.json`'ı
    repo köküne koyun.
-4. iOS app ekleyin (`com.habersosyal.app`) → `GoogleService-Info.plist`'i
+4. iOS app ekleyin (`com.haberly.app`) → `GoogleService-Info.plist`'i
    repo köküne koyun.
 5. **Firestore**'u oluşturun, ardından:
    ```bash
@@ -119,7 +119,7 @@ eas build --profile development --platform android
   uygulama güncelleme yayınlanana kadar tamamen kırılabilir. Sertifika
   şeffaflığı ve geçerlilik kontrolü bu uç noktalar için zaten OS düzeyinde
   (Apple ATS / Android Conscrypt) uygulanır. **Eğer ileride kendi backend
-  domain'inizi eklerseniz** (örn. `api.habersosyal.com`), o domain için
+  domain'inizi eklerseniz** (örn. `api.haberly.app`), o domain için
   `react-native-ssl-pinning` veya native `NSURLSession`/`OkHttp`
   pinning'i SADECE o domain'e uygulayın.
 - **Bot koruması**: e-posta onayı zorunlu, tek hesap/e-posta (Firebase Auth

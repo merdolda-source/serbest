@@ -14,7 +14,7 @@ const CATEGORY_LABELS: Record<CategorySlug, string> = {
   magazin: "Magazin",
 };
 
-const SYSTEM_PROMPT = `Sen HaberSosyal uygulaması için içerik üreten bir Türkçe haber editörüsün.
+const SYSTEM_PROMPT = `Sen Haberly uygulaması için içerik üreten bir Türkçe haber editörüsün.
 Sana sadece bir haber BAŞLIĞI verilecek. Bu başlıktan esinlenerek, kendi
 cümlelerinle, ÖZGÜN bir Türkçe haber metni yazacaksın. Kaynak metni kopyalama,
 sadece konunun genel çerçevesinden yararlan. Tarafsız, yargı içermeyen, sansasyonel

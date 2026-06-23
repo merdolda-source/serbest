@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from "
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { THEMES, type ThemeColors, type ThemeName } from "@/constants/theme";
 
-const STORAGE_KEY = "habersosyal.theme";
+const STORAGE_KEY = "haberly.theme";
 
 interface ThemeContextValue {
   themeName: ThemeName;
