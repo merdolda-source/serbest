@@ -4,14 +4,17 @@ import { CATEGORIES } from "@/constants/categories";
 import type { AppNotification } from "@/utils/types";
 
 export function subscribeToNotificationsFeed(
-  onChange: (items: Omit<AppNotification, "read">[]) => void
+  onChange: (items: Omit<AppNotification, "read">[]) => void,
+  onError: (error: Error) => void
 ) {
   return firestore()
     .collection("notificationsFeed")
     .orderBy("createdAt", "desc")
     .limit(50)
-    .onSnapshot((snap) =>
-      onChange(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Omit<AppNotification, "read">)))
+    .onSnapshot(
+      (snap) =>
+        onChange(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Omit<AppNotification, "read">))),
+      onError
     );
 }
 

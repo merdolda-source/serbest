@@ -22,8 +22,9 @@ firestore().settings({
 /** Bot korumasının ilk savunma hattı: sahte/otomasyon istemcilerin
  * Firestore ve Cloud Functions'a erişimini App Check ile sınırlar. */
 export async function initAppCheck() {
+  const provider = appCheck().newReactNativeFirebaseAppCheckProvider();
   await appCheck().initializeAppCheck({
-    provider: appCheck.newReactNativeFirebaseAppCheckProvider(),
+    provider,
     isTokenAutoRefreshEnabled: true,
   });
 }
@@ -31,7 +32,7 @@ export async function initAppCheck() {
 const FUNCTIONS_REGION = "europe-west1";
 
 export function callable<Req = unknown, Res = unknown>(name: string) {
-  return functions(firebaseApp(), FUNCTIONS_REGION).httpsCallable<Req, Res>(name);
+  return firebaseApp.app().functions(FUNCTIONS_REGION).httpsCallable<Req, Res>(name);
 }
 
 export { firebaseApp, auth, firestore, functions, messaging, analytics, appCheck };

@@ -4,6 +4,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider, useTheme } from "@/hooks/useTheme";
+import { useSecurityGuard } from "@/hooks/useSecurityGuard";
+import { SecurityBlockScreen } from "@/components/SecurityBlockScreen";
 import { initAppCheck } from "@/services/firebase";
 import { createAppOpenAd } from "@/services/adsService";
 
@@ -45,7 +47,10 @@ export default function RootLayout() {
     bootstrap();
   }, []);
 
+  const security = useSecurityGuard();
+
   if (!ready) return null;
+  if (security.blocked) return <SecurityBlockScreen reason={security.reason!} />;
 
   return (
     <ThemeProvider>

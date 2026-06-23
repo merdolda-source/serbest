@@ -6,6 +6,8 @@ import { tr } from "date-fns/locale";
 import { ThemedSurface, ThemedText, ThemedView } from "@/components/Themed";
 import { RequireAuth } from "@/components/RequireAuth";
 import { EmptyState } from "@/components/EmptyState";
+import { LoadingView } from "@/components/LoadingView";
+import { ErrorView } from "@/components/ErrorView";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -14,21 +16,34 @@ import {
   subscribeToReadIds,
 } from "@/services/notificationService";
 import { CATEGORIES } from "@/constants/categories";
-import type { AppNotification } from "@/utils/types";
+import type { AppNotification, AsyncState } from "@/utils/types";
 
 function NotificationsList() {
   const { colors } = useTheme();
   const { firebaseUser } = useAuth();
   const router = useRouter();
-  const [items, setItems] = useState<Omit<AppNotification, "read">[]>([]);
+  const [state, setState] = useState<AsyncState<Omit<AppNotification, "read">[]>>({
+    status: "loading",
+  });
   const [readIds, setReadIds] = useState<Set<string>>(new Set());
 
-  useEffect(() => subscribeToNotificationsFeed(setItems), []);
+  useEffect(
+    () =>
+      subscribeToNotificationsFeed(
+        (items) => setState({ status: "success", data: items }),
+        (error) => setState({ status: "error", error: error.message })
+      ),
+    []
+  );
   useEffect(() => {
     if (!firebaseUser) return;
     return subscribeToReadIds(firebaseUser.uid, setReadIds);
   }, [firebaseUser]);
 
+  if (state.status === "error") return <ErrorView message={state.error} />;
+  if (state.status !== "success") return <LoadingView />;
+
+  const items = state.data;
   if (items.length === 0) {
     return <EmptyState message="Henüz bildirim yok." />;
   }

@@ -77,9 +77,11 @@ export async function sendPasswordReset(email: string) {
 
 export async function loginWithGoogle() {
   await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-  const { idToken } = await GoogleSignin.signIn();
-  if (!idToken) throw new Error("Google girişinden token alınamadı");
-  const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+  const response = await GoogleSignin.signIn();
+  if (response.type !== "success" || !response.data.idToken) {
+    throw new Error("Google girişinden token alınamadı");
+  }
+  const googleCredential = auth.GoogleAuthProvider.credential(response.data.idToken);
   const credential = await auth().signInWithCredential(googleCredential);
   await syncUserDocument(credential.user);
   return credential.user;
@@ -114,8 +116,7 @@ export async function loginWithApple() {
 }
 
 export async function logout() {
-  const wasGoogle = await GoogleSignin.isSignedIn().catch(() => false);
-  if (wasGoogle) {
+  if (GoogleSignin.hasPreviousSignIn()) {
     await GoogleSignin.signOut().catch(() => undefined);
   }
   await auth().signOut();
