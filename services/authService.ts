@@ -2,7 +2,17 @@ import auth, { type FirebaseAuthTypes } from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
+import * as Crypto from "expo-crypto";
 import { Platform } from "react-native";
+
+function generateNonce(length = 32) {
+  const charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += charset[Math.floor(Math.random() * charset.length)];
+  }
+  return result;
+}
 
 GoogleSignin.configure({
   webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
@@ -91,19 +101,19 @@ export async function loginWithApple() {
   if (Platform.OS !== "ios") {
     throw new Error("Apple ile giriş yalnızca iOS'ta kullanılabilir");
   }
+  const rawNonce = generateNonce();
+  const hashedNonce = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, rawNonce);
   const appleResponse = await AppleAuthentication.signInAsync({
     requestedScopes: [
       AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
       AppleAuthentication.AppleAuthenticationScope.EMAIL,
     ],
+    nonce: hashedNonce,
   });
   if (!appleResponse.identityToken) {
     throw new Error("Apple girişinden token alınamadı");
   }
-  const appleCredential = auth.AppleAuthProvider.credential(
-    appleResponse.identityToken,
-    appleResponse.authorizationCode ?? undefined
-  );
+  const appleCredential = auth.AppleAuthProvider.credential(appleResponse.identityToken, rawNonce);
   const credential = await auth().signInWithCredential(appleCredential);
   if (appleResponse.fullName?.givenName && !credential.user.displayName) {
     const name = [appleResponse.fullName.givenName, appleResponse.fullName.familyName]
