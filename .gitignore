@@ -1,0 +1,38 @@
+node_modules/
+.expo/
+dist/
+web-build/
+*.log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# macOS
+.DS_Store
+
+# Env / secrets
+.env
+.env.local
+.env.*.local
+google-services.json
+GoogleService-Info.plist
+serviceAccountKey.json
+
+# Firebase Functions
+functions/node_modules/
+functions/lib/
+functions/.env
+
+# TypeScript
+*.tsbuildinfo
+
+# EAS
+.eas/

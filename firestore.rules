@@ -1,0 +1,73 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // contents: RSS başlıklarından Claude ile üretilir, sadece Cloud Functions
+    // (Admin SDK) yazar. Kayıt olmadan herkes okuyabilir.
+    match /contents/{contentId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // comments: hız limiti / IP takibi / spam filtresi sadece sunucu tarafında
+    // (Cloud Functions callable) uygulanabildiği için client'tan DOĞRUDAN
+    // yazma kapalıdır. Okuma herkese açıktır.
+    match /comments/{commentId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Beğeniler de aynı sebeple sadece Cloud Functions üzerinden değişir.
+    match /commentLikes/{likeId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+
+    // users/{uid}: kullanıcı sadece kendi profilini okuyabilir ve güvenli
+    // alanları güncelleyebilir. banned / commentCountLastMinute gibi alanlar
+    // sadece Cloud Functions tarafından (Admin SDK) değiştirilir.
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid) &&
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['displayName', 'photoURL', 'theme', 'notificationsEnabled', 'pushToken', 'emailVerified']);
+      allow delete: if false;
+    }
+
+    // notificationsFeed: herkese aynı içerik bildirimleri yayınlanır (fan-out
+    // yok, ölçeklenebilir). Sadece giriş yapmış kullanıcılar görebilir
+    // ("Bildirimler" sekmesi giriş gerektirir). Oluşturma Cloud Functions'a aittir.
+    match /notificationsFeed/{notificationId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+
+    // Her kullanıcı kendi "okundu" işaretlerini kendi alt koleksiyonunda tutar.
+    match /users/{uid}/readNotifications/{notificationId} {
+      allow read, write: if isOwner(uid);
+    }
+
+    // Bot koruması için sunucu tarafı defterler: client erişimi tamamen kapalı.
+    match /rateLimits/{uid} {
+      allow read, write: if false;
+    }
+    match /ipLogs/{ip} {
+      allow read, write: if false;
+    }
+
+    match /rssSources/{sourceId} {
+      allow read: if false;
+      allow write: if false;
+    }
+  }
+}
