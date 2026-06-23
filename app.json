@@ -48,6 +48,7 @@
           "ios": { "useFrameworks": "static" }
         }
       ],
+      "./plugins/withFirebaseMessagingManifestFix",
       [
         "expo-notifications",
         {
@@ -55,7 +56,6 @@
           "color": "#0B0B0F"
         }
       ],
-      "./plugins/withFirebaseMessagingManifestFix",
       [
         "react-native-google-mobile-ads",
         {
